@@ -11,7 +11,7 @@ function App() {
   const [skill, setSkill] = useState([]);
   const [item, setItem] = useState([]);
   const [run, setRun] = useState(false);
-  const [stat, setStat] = useState([]);
+  const [stats, setStats] = useState([]);
 
   useEffect(() => {
     fetchData();
@@ -29,34 +29,23 @@ function App() {
     }
   }
 
-  const fetchStat = async () => {
-    try {
-      const response = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon/${selectedPokemonName}`
-      );
-      setStat(response.data.stats);
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
-
   async function fetchPokemonDetails(pokemonName) {
     try {
       setLoading(true);
       const response = await axios.get(
         `https://pokeapi.co/api/v2/pokemon/${pokemonName}`
       );
-      const { name, sprites } = response.data;
+      const { name, sprites, stats } = response.data;
       setName(name);
-      setSkill([]);
-      setItem([]);
-      setRun(false);
       setPic(sprites.other.showdown.back_default);
-      setSelectedPokemonName(pokemonName);
+      setSkill(response.data.moves);
+      setItem(response.data.held_items);
+      setStats(stats);
+      setRun(false);
       setLoading(false);
-      // fetchStat();
     } catch (error) {
       console.error("Error fetching Pokemon details:", error);
+      setLoading(false);
     }
   }
 
@@ -116,11 +105,13 @@ function App() {
                 src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/493.png"
                 alt="Boss"
               />
-              { <div>
-                {stat.map((s, index) => (
-                  <div key={index}>{s.base_stat}</div>
+              <div>
+                {stats.map((stat, index) => (
+                  <div key={index}>
+                    {stat.stat.name}: {stat.base_stat}
+                  </div>
                 ))}
-              </div> }
+              </div>
             </div>
             <div className="pokemon">
               <img src={pic} alt={name} />
