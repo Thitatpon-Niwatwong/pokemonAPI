@@ -106,6 +106,7 @@ function App() {
                 alt="Boss"
               />
               <div>
+                <h3>{name}</h3>
                 {stats.map((stat, index) => (
                   <div key={index}>
                     {stat.stat.name}: {stat.base_stat}
