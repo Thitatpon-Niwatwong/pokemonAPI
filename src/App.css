@@ -9,13 +9,13 @@ img {
 }
 
 .control {
-  position: absolute;
+  position: fixed;
   background-color: #80d880;
   width: 100%;
   display: flex;
   justify-content: space-between;
   border: 3px solid #303030;
-  height: 133px;
+  bottom: 0px;
 }
 
 .text {
@@ -47,6 +47,7 @@ ul {
 }
 
 li {
+  margin-left: 50px;
   font-size: 30px;
   padding: 10px;
 }
@@ -66,4 +67,21 @@ li {
 .load {
   font-size: 100px;
   color: azure;
+}
+
+.box-below {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ffffff;
+  padding: 10px;
+  border: 2px solid #000000;
+}
+
+.name {
+  position: fixed;
+  left: 300px;
+  top: 250px;
+  color: #ffffff;
 }

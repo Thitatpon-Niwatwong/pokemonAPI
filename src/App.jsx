@@ -11,7 +11,9 @@ function App() {
   const [skill, setSkill] = useState([]);
   const [item, setItem] = useState([]);
   const [run, setRun] = useState(false);
-  const [stats, setStats] = useState([]);
+  const [showSkill, setShowSkill] = useState(false);
+  const [showItem, setShowItem] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -35,12 +37,11 @@ function App() {
       const response = await axios.get(
         `https://pokeapi.co/api/v2/pokemon/${pokemonName}`
       );
-      const { name, sprites, stats } = response.data;
+      const { name, sprites } = response.data;
       setName(name);
-      setPic(sprites.other.showdown.back_default);
+      setPic(sprites.other["official-artwork"].front_default);
       setSkill(response.data.moves);
       setItem(response.data.held_items);
-      setStats(stats);
       setRun(false);
       setLoading(false);
     } catch (error) {
@@ -59,6 +60,7 @@ function App() {
       setSkill(response.data.moves);
       setItem([]);
       setRun(false);
+      setMessage("Skills are displayed!");
     } catch (error) {
       console.error("Error fetching Pokemon skills:", error);
     }
@@ -76,6 +78,7 @@ function App() {
       setSkill([]);
       setItem(response.data.held_items);
       setRun(false);
+      setMessage("Items are displayed!");
     } catch (error) {
       console.error("Error fetching Pokemon items:", error);
     }
@@ -92,6 +95,8 @@ function App() {
     setItem([]);
     setRun(true);
     setPic("");
+    setShowSkill(false);
+    setShowItem(false);
   }
 
   return (
@@ -105,13 +110,8 @@ function App() {
                 src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/493.png"
                 alt="Boss"
               />
-              <div>
+              <div className="name">
                 <h3>{name}</h3>
-                {stats.map((stat, index) => (
-                  <div key={index}>
-                    {stat.stat.name}: {stat.base_stat}
-                  </div>
-                ))}
               </div>
             </div>
             <div className="pokemon">
@@ -122,17 +122,15 @@ function App() {
           <div className="control">
             <div className="text">
               {!name && <div className="text"></div>}
-              {name && skill.length === 0 && item.length === 0 && !run && (
-                <h1>What will {name} do?</h1>
-              )}
-              {skill.length > 0 && item.length === 0 && !run && (
+              {name && !run && <h1>What will {name} do?</h1>}
+              {!run && showSkill && (
                 <ul>
                   {skill.slice(0, 4).map((s, index) => (
                     <li key={index}>{s.move.name}</li>
                   ))}
                 </ul>
               )}
-              {item.length > 0 && skill.length === 0 && !run && (
+              {!run && showItem && (
                 <ul>
                   {item.map((i, index) => (
                     <li key={index}>{i.item.name}</li>
@@ -157,13 +155,21 @@ function App() {
                 ))}
               </select>
               <button
-                onClick={fetchSkill}
+                onClick={() => {
+                  fetchSkill();
+                  setShowSkill(true);
+                  setShowItem(false);
+                }}
                 className="button-item btn btn-warning"
               >
                 Skills
               </button>
               <button
-                onClick={fetchItem}
+                onClick={() => {
+                  fetchItem();
+                  setShowSkill(false);
+                  setShowItem(true);
+                }}
                 className="button-item btn btn-danger"
               >
                 Items
